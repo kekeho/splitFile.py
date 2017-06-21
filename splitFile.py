@@ -43,12 +43,15 @@ def join(directory=""):
     if directory != "":
         if directory[:-1] != "/":
             directory = directory + "/"
-    allSpfFiles = sorted(glob("{}*.spf".format(directory)))
-    print(allSpfFiles)
-    for filename in allSpfFiles:
+    allSpfFiles = glob("{}*.spf".format(directory))
+    joinedFileName = allSpfFiles[0].rsplit(".", 2)[0]
+    
+    numList = sorted([int(x.rsplit(".", 2)[1]) for x in allSpfFiles])
+
+    for num in numList:
         try:
-            with open(filename, "rb") as bfile:
-                with open(filename.rsplit(".", 2)[0], "ab") as joinedfile:
+            with open(joinedFileName + "." + str(num) + ".spf", "rb") as bfile:
+                with open(joinedFileName, "ab") as joinedfile:
                     joinedfile.write(bfile.read())
         except FileNotFoundError:
             print("No such '.spf' file.")
@@ -67,3 +70,5 @@ if __name__ == '__main__':
             join()
     elif [x for x in argv if r.match(x)]:
         split(argv[1], [x for x in argv if r.match(x)][0][6:])
+    else:
+        split(argv[1])
